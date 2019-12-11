@@ -1,0 +1,61 @@
+$darkGrey: rgb(112, 98, 97);
+$darkBlue: rgb(83, 100, 143);
+$accent: rgb(255, 89, 151);
+$blue: rgb(78, 178, 238);
+$lightGrey: rgb(246, 246, 246);
+
+.Register{
+    border-radius: 0 !important;
+}
+
+.Register-Input{
+    background-color: $lightGrey;
+}
+
+.Register-Title{
+    color: $darkBlue;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: 500;
+}
+
+.Register-Footer{
+    border-top: none;
+}
+
+.Register-description{
+    color: $darkGrey;
+    text-align: center;
+    font-weight: 100;
+}
+
+.Register-Header{
+    display: block !important;
+    text-align: center;
+    border-bottom:none !important;
+    & h5{
+        font-weight: 300;
+    }
+}
+
+.Register-Progress{
+    border-radius: 0 !important;
+    height: 5px !important;
+}
+
+.Register-ProgressBar{
+    background-color: $blue !important;
+    border-radius: 0 !important;
+}
+
+.Register-SelectMenu{
+    overflow: auto;
+    max-height: 350px;
+}
+
+.Button-Next{
+    text-transform: uppercase;
+    font-weight: 500;
+    background-color: $accent;
+    border-color: $accent;
+}
