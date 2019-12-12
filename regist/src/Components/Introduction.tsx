@@ -44,9 +44,9 @@ export default class Introduction extends React.PureComponent<Props, State> {
                         </Input>
                     </FormGroup>
                 </ModalBody>
-                <ModalFooter className="Register-Footer">
-                    <Button color="primary" onClick={prev}>prev step</Button>
-                    <Button disabled={!firstName || !lastName} color="primary" onClick={next}>next step</Button>
+                <ModalFooter className="Register-Footer Footer-space">
+                    <Button color="link" className="Button-Prev" onClick={prev}>prev step</Button>
+                    <Button className="Button-Next" disabled={!firstName || !lastName} color="danger" onClick={next}>next step</Button>
                 </ModalFooter>
             </>
         );

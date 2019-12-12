@@ -18,7 +18,7 @@ export default class Timezone extends React.PureComponent<Props, State> {
         super(props);
 
         this.state = {
-            data: moment.tz.names(),value: moment.tz.guess(), open: false
+            data: moment.tz.names(), value: moment.tz.guess(), open: false
         };
     }
 
@@ -39,9 +39,9 @@ export default class Timezone extends React.PureComponent<Props, State> {
                 <ModalBody>
                     <FormGroup>
                         <Dropdown isOpen={open} toggle={this.toggleMenu}>
-                            <DropdownToggle className="form-control" tag="div" caret>
-                                <h6>Select your timezone</h6>
-                                {value}
+                            <DropdownToggle className="form-control Dropdown-Title" tag="div" caret>
+                                <span> <div className="Input-Title">Select your timezone</div>
+                                    <div className="Input-Value"> {value}</div></span>
                             </DropdownToggle>
                             {data.length > 0 && <DropdownMenu className="Register-SelectMenu"  >
                                 {data.map((el: string, key) => <DropdownItem onClick={() => this.zoneHandler(el)} key={key} >{el}</DropdownItem>)}
@@ -49,9 +49,9 @@ export default class Timezone extends React.PureComponent<Props, State> {
                         </Dropdown>
                     </FormGroup>
                 </ModalBody>
-                <ModalFooter className="Register-Footer">
-                    <Button color="primary" onClick={prev}>prev step</Button>
-                    <Button disabled={!value} color="primary" onClick={next}>Next Step</Button>
+                <ModalFooter className="Register-Footer Footer-space">
+                    <Button className="Button-Prev"  color="light" onClick={prev}>prev step</Button>
+                    <Button className="Button-Next" disabled={!value} color="danger" onClick={next}>Next Step</Button>
                 </ModalFooter>
             </>
         );

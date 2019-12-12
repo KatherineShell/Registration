@@ -23,6 +23,11 @@ $lightGrey: rgb(246, 246, 246);
     border-top: none;
 }
 
+.Footer-space{
+    display: flex;
+    justify-content: space-between;
+}
+
 .Register-description{
     color: $darkGrey;
     text-align: center;
@@ -33,6 +38,7 @@ $lightGrey: rgb(246, 246, 246);
     display: block !important;
     text-align: center;
     border-bottom:none !important;
+    
     & h5{
         font-weight: 300;
     }
@@ -58,4 +64,56 @@ $lightGrey: rgb(246, 246, 246);
     font-weight: 500;
     background-color: $accent;
     border-color: $accent;
+    position: relative;
+    padding-right: 25px;
+
+    &::after{
+        content: '';
+        background: url(../img/right-chevron.svg);
+        height: 70%;
+        width: 17px;
+        background-position: center ;
+        background-size: 100% 100%;
+        position: absolute;
+        right: 5px;
+    }
+}
+
+.Button-Prev{
+    text-transform: uppercase;
+    font-weight: 500;
+    color: $darkGrey;
+    text-decoration: none !important;
+    padding-left: 25px;
+    position: relative;
+
+    &::before{
+        content: '';
+        height: 70%;
+        width: 17px;
+        background-position: center !important;
+        background-size: 100% 100% !important;
+        position: absolute;
+        left: 5px;
+        background: url(../img/chevron-pointing-to-the-left.svg);
+    }
+}
+
+.Input-Title{
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 15px;
+    color:$blue;
+}
+
+.Input-Value{
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 15px;
+}
+
+.Dropdown-Title{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }

@@ -32,9 +32,9 @@ export default class Company extends React.PureComponent<Props, State> {
                         <Input onChange={this.onHandler} value={name} type="text" name="name" placeholder="Company Name (optional)" />
                     </FormGroup>
                 </ModalBody>
-                <ModalFooter className="Register-Footer">
-                    <Button color="primary" onClick={prev}>prev step</Button>
-                    <Button color="primary" onClick={next}>{name ? 'Next Step' : 'Skip this step'}</Button>
+                <ModalFooter className="Register-Footer Footer-space">
+                    <Button className="Button-Prev" color="primary" onClick={prev}>prev step</Button>
+                    <Button className="Button-Next" color="danger" onClick={next}>{name ? 'Next Step' : 'Skip this step'}</Button>
                 </ModalFooter>
             </>
         );
