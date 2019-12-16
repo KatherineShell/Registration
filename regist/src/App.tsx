@@ -1,30 +1,91 @@
 import React from 'react';
 import { Button } from 'reactstrap';
-import Email from './Components/Email';
-import Introduction from './Components/Introduction';
-import Company from './Components/Company';
+import CompanyModal from './Components/Modals/CompanyModal';
+import TimezoneModal from './Components/Modals/TimezoneModal';
 import './App.css';
 import './Components/main.scss';
-import ModalWrapper from './Components/ModalWrapper';
-import Timezone from './Components/Timezone';
+import CheckDataModal from './Components/Modals/CheckDataModal';
+import EmailModal from './Components/Modals/EmailModal';
+import IntroModal from './Components/Modals/IntroModal';
+import { connect } from 'react-redux';
+import * as actions from './Store/actions';
+import { ActionsTypes } from './Store/actions';
+import InfoModal from './Components/Modals/InfoModal';
+import { Text } from './Constants/text';
+import axios from 'axios';
 
 interface State {
   isEmailOpen: boolean;
   isIntroOpen: boolean;
   isCompanyOpen: boolean;
   isZoneOpen: boolean;
+  isSubmitOpen: boolean;
+  isSuccess: boolean;
+  isEmailValid: boolean;
+  email: string;
+  firstName: string;
+  lastName: string;
+  companyName: string;
+  timeZone: string;
+  gender: string;
 }
 
-export default class App extends React.PureComponent<{}, State> {
-  constructor(props: {}) {
+type Props = Pick<ActionsTypes, 'saveAccount'>;
+
+class App extends React.PureComponent<Props, State> {
+  constructor(props: Props) {
     super(props);
 
-    this.state = { isEmailOpen: false, isIntroOpen: false, isCompanyOpen: false, isZoneOpen: false };
+    this.state = {
+      isEmailOpen: false, isIntroOpen: false, isCompanyOpen: false, isZoneOpen: false,
+      email: '', lastName: '', firstName: '', timeZone: '', companyName: '', gender: '',
+      isSubmitOpen: false, isSuccess: false, isEmailValid: false
+    };
+  }
+  private id: number = 0;
+
+  onChangeEmail = (val: string) => {
+
+    let that = this;
+
+    if (this.id) clearTimeout(this.id);
+
+    this.id = window.setTimeout(function () {
+      clearTimeout(that.id);
+
+      axios.post('https://frontapi.vinchain.io/auth/api/check-email/', {
+        email: val
+      }, { headers: { 'Content-Type': 'application/json' } })
+        .then(function (response: any) {
+          that.setState({ isEmailValid: response.status === 200 });
+        })
+        .catch(function (error) {
+          console.log(error);
+          that.setState({ isEmailValid: false });
+        });
+    }, 500);
+
+    this.setState({ email: val, isEmailValid: false  });
   }
 
-  componentDidMount(){
-    document.documentElement.style
-    .setProperty('--danger', 'rgb(255, 89, 151)');
+  onChangeFirstName = (val: string) => {
+    this.setState({ firstName: val });
+  }
+
+  onChangeLastName = (val: string) => {
+    this.setState({ lastName: val });
+  }
+
+  onChangeCompany = (val: string) => {
+    this.setState({ companyName: val });
+  }
+
+  onChangeTimezone = (val: string) => {
+    this.setState({ timeZone: val });
+  }
+
+  onChangeGender = (val: string) => {
+    this.setState({ gender: val });
   }
 
   isEmailToggle = () => {
@@ -43,6 +104,14 @@ export default class App extends React.PureComponent<{}, State> {
     this.setState((state) => ({ isZoneOpen: !state.isZoneOpen }));
   }
 
+  isSubmitToggle = () => {
+    this.setState((state) => ({ isSubmitOpen: !state.isSubmitOpen }));
+  }
+
+  isSuccessToggle = () => {
+    this.setState((state) => ({ isSuccess: !state.isSuccess }));
+  }
+
   toIntroStep = () => {
     this.isEmailToggle();
     this.isIntroToggle();
@@ -58,60 +127,61 @@ export default class App extends React.PureComponent<{}, State> {
     this.isCompanyToggle();
   }
 
+  toSubmit = () => {
+    this.isZoneToggle();
+    this.isSubmitToggle();
+  }
+
+  submit = () => {
+    let { timeZone, email, firstName,
+      lastName, gender, companyName } = this.state;
+
+    this.props.saveAccount(timeZone, email, gender, firstName, lastName, companyName);
+    this.isSubmitToggle();
+    this.onChangeEmail('');
+    this.onChangeFirstName('');
+    this.onChangeLastName('');
+    this.onChangeCompany('');
+    this.onChangeTimezone('');
+    this.onChangeGender('');
+    this.isSuccessToggle();
+  }
 
   render() {
-    let { isCompanyOpen, isIntroOpen, isEmailOpen, isZoneOpen } = this.state;
+    let { isCompanyOpen, isIntroOpen, isEmailOpen, isZoneOpen, email, firstName,
+      lastName, gender, companyName, timeZone, isSubmitOpen, isSuccess, isEmailValid } = this.state;
 
     return (
       <div className="App">
         <header className="App-header">
           <Button onClick={this.isEmailToggle} color="danger" >Register</Button>
 
-          <ModalWrapper value={20} title="Create your VINchain account. Easy to use anytime, anywhere for everyone" toggle={this.isEmailToggle} modal={isEmailOpen}  >
-            <Email next={this.toIntroStep} />
-          </ModalWrapper>
+          <EmailModal onChangeEmail={this.onChangeEmail} next={this.toIntroStep} toggle={this.isEmailToggle}
+            open={isEmailOpen} email={email} disabled={!isEmailValid} />
 
-          <ModalWrapper value={40} title="Let's introduce ourselves! Your name will be displayed in all reports, documents, etc." toggle={this.isIntroToggle} modal={isIntroOpen}  >
-            <Introduction prev={this.toIntroStep} next={this.toCompanyStep} />
-          </ModalWrapper>
+          <IntroModal toggle={this.isIntroToggle} open={isIntroOpen} firstName={firstName} lastName={lastName}
+            onChangeFirstName={this.onChangeFirstName} gender={gender} onChangeGender={this.onChangeGender}
+            onChangeLastName={this.onChangeLastName} prev={this.toIntroStep} next={this.toCompanyStep} />
 
-          <ModalWrapper value={60} title="Tracking company vehicles? (optional)" toggle={this.isCompanyToggle} modal={isCompanyOpen}  >
-            <Company prev={this.toCompanyStep} next={this.toZoneStep} />
-          </ModalWrapper>
+          <CompanyModal toggle={this.isCompanyToggle} open={isCompanyOpen} onChangeCompany={this.onChangeCompany}
+            companyName={companyName} prev={this.toCompanyStep} next={this.toZoneStep} />
 
-          <ModalWrapper value={80} title="Set your time zone" toggle={this.isCompanyToggle} modal={isZoneOpen}  >
-            <Timezone prev={this.toZoneStep} next={this.isIntroToggle} />
-          </ModalWrapper>
+          <TimezoneModal toggle={this.isZoneToggle} open={isZoneOpen} onChangeTimezone={this.onChangeTimezone}
+            timeZone={timeZone} prev={this.toZoneStep} next={this.toSubmit} />
 
-          <ModalWrapper value={100} title="Check your data" toggle={this.isCompanyToggle} modal={isZoneOpen}  >
-            <Timezone prev={this.toZoneStep} next={this.isIntroToggle} />
-          </ModalWrapper>
+          <CheckDataModal toggle={this.isSubmitToggle} open={isSubmitOpen} email={email}
+            onChangeEmail={this.onChangeEmail} timeZone={timeZone} onChangeLastName={this.onChangeLastName}
+            onChangeTimezone={this.onChangeTimezone} gender={gender} onChangeGender={this.onChangeGender}
+            firstName={firstName} lastName={lastName} onChangeFirstName={this.onChangeFirstName}
+            onChangeCompany={this.onChangeCompany} companyName={companyName} submit={this.submit}
+            disabled={!isEmailValid}
+          />
+
+          <InfoModal title='Congratulations!' text={Text.successCreation} toggle={this.isSuccessToggle} modal={isSuccess} />
         </header>
       </div>
     );
   }
 };
-// const App: React.FC = () => {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         {/*  <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.tsx</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>*/}
-//         <Button color="danger" >Register</Button>
-//         <Email />
-//       </header>
-//     </div>
-//   );
-// }
 
-// export default App;
+export default connect(null, actions)(App);

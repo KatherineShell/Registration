@@ -4,37 +4,28 @@ import { Button, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
 interface Props {
     next: () => void;
     prev: () => void;
+    onChangeCompany: (value: string) => void;
+    companyName: string;
 }
 
-interface State {
-    name: string;
-}
-
-export default class Company extends React.PureComponent<Props, State> {
-    constructor(props: Props) {
-        super(props);
-
-        this.state = { name: '' };
-    }
-
+export default class Company extends React.PureComponent<Props> {
     onHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({ name: e.target.value });
+        this.props.onChangeCompany(e.target.value);
     }
 
     render() {
-        let { next, prev } = this.props;
-        let { name } = this.state;
+        let { next, prev, companyName } = this.props;
 
         return (
             <>
                 <ModalBody>
                     <FormGroup>
-                        <Input onChange={this.onHandler} value={name} type="text" name="name" placeholder="Company Name (optional)" />
+                        <Input onChange={this.onHandler} className="Register-Input" value={companyName} type="text" name="name" placeholder="Company Name (optional)" />
                     </FormGroup>
                 </ModalBody>
                 <ModalFooter className="Register-Footer Footer-space">
-                    <Button className="Button-Prev" color="primary" onClick={prev}>prev step</Button>
-                    <Button className="Button-Next" color="danger" onClick={next}>{name ? 'Next Step' : 'Skip this step'}</Button>
+                    <Button className="Button-Prev" color="link" onClick={prev}>prev step</Button>
+                    <Button className="Button-Next" color="danger" onClick={next}>{companyName ? 'Next Step' : 'Skip this step'}</Button>
                 </ModalFooter>
             </>
         );

@@ -1,16 +1,18 @@
 import React from 'react';
-import { Button, ModalBody, ModalFooter, FormGroup, Dropdown, DropdownToggle, DropdownItem, DropdownMenu } from 'reactstrap';
+import { Button, ModalBody, ModalFooter, FormGroup } from 'reactstrap';
 import moment from 'moment-timezone';
+import CustomDropdown from './CustomDropdown';
 
 interface Props {
     next: () => void;
     prev: () => void;
+    onChangeTimezone: (val: string) => void;
+    timeZone: string;
 }
 
 interface State {
     value: string;
     data: string[];
-    open: boolean;
 }
 
 export default class Timezone extends React.PureComponent<Props, State> {
@@ -18,39 +20,31 @@ export default class Timezone extends React.PureComponent<Props, State> {
         super(props);
 
         this.state = {
-            data: moment.tz.names(), value: moment.tz.guess(), open: false
+            data: moment.tz.names(), value: moment.tz.guess()
         };
     }
 
-    zoneHandler = (val: string) => {
-        this.setState({ value: val });
-    }
-
-    toggleMenu = () => {
-        this.setState((state) => ({ open: !state.open }));
+    componentDidMount() {
+        this.props.onChangeTimezone(this.state.value);
     }
 
     render() {
-        let { next, prev } = this.props;
-        let { open, value, data } = this.state;
+        let { next, prev, onChangeTimezone, timeZone } = this.props;
+        let { value, data } = this.state;
 
         return (
             <>
                 <ModalBody>
                     <FormGroup>
-                        <Dropdown isOpen={open} toggle={this.toggleMenu}>
-                            <DropdownToggle className="form-control Dropdown-Title" tag="div" caret>
-                                <span> <div className="Input-Title">Select your timezone</div>
-                                    <div className="Input-Value"> {value}</div></span>
-                            </DropdownToggle>
-                            {data.length > 0 && <DropdownMenu className="Register-SelectMenu"  >
-                                {data.map((el: string, key) => <DropdownItem onClick={() => this.zoneHandler(el)} key={key} >{el}</DropdownItem>)}
-                            </DropdownMenu>}
-                        </Dropdown>
+                        <CustomDropdown data={data} value={timeZone || value} onChange={onChangeTimezone}
+                            titleRender={(val) => <span>
+                                <div className="Input-Title">Select your timezone</div>
+                                <div className="Input-Value"> {val}</div>
+                            </span>} />
                     </FormGroup>
                 </ModalBody>
                 <ModalFooter className="Register-Footer Footer-space">
-                    <Button className="Button-Prev"  color="light" onClick={prev}>prev step</Button>
+                    <Button className="Button-Prev" color="light" onClick={prev}>prev step</Button>
                     <Button className="Button-Next" disabled={!value} color="danger" onClick={next}>Next Step</Button>
                 </ModalFooter>
             </>

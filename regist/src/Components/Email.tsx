@@ -1,42 +1,34 @@
 import React from 'react';
-import { Button, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
+import { Button, ModalBody, ModalFooter, FormGroup, Input, FormFeedback } from 'reactstrap';
+import {Text} from '../Constants/text';
 
 interface Props {
     next: () => void;
-}
-
-interface State {
+    onChangeEmail: (val: string) => void;
     email: string;
-    isValid: boolean;
+    disabled: boolean;
 }
 
-export default class Email extends React.PureComponent<Props, State> {
-    constructor(props: Props) {
-        super(props);
+const Email = ({ next, email, disabled, onChangeEmail }: Props) => {
 
-        this.state = { email: '', isValid: false };
-    }
+    let onHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        onChangeEmail(e.target.value);
+    };
 
-    onHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({ email: e.target.value });
-    }
+    return (
+        <>
+            <ModalBody>
+                <FormGroup>
+                    <Input invalid={email !== '' && disabled} type="email" value={email} onChange={onHandler} className="Register-Input" placeholder="E-mail" />
+                    <FormFeedback>{Text.emailError}</FormFeedback>
+                </FormGroup>
+                <div className="Register-description">{Text.emailText}</div>
+            </ModalBody>
+            <ModalFooter className="Register-Footer">
+                <Button disabled={disabled} className="Button-Next" color="danger" onClick={next}>next step</Button>
+            </ModalFooter>
+        </>
+    );
+}
 
-    render() {
-        let { next } = this.props;
-        let { email } = this.state;
-
-        return (
-            <>
-                <ModalBody>
-                    <FormGroup>
-                        <Input type="email" value={email} onChange={this.onHandler} className="Register-Input" placeholder="E-mail" />
-                    </FormGroup>
-                    <div className="Register-description">We'll make a link to create a password for your new account</div>
-                </ModalBody>
-                <ModalFooter className="Register-Footer">
-                    <Button className="Button-Next" color="danger" onClick={next}>next step</Button>
-                </ModalFooter>
-            </>
-        );
-    }
-};
+export default React.memo(Email);

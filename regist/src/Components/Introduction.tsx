@@ -1,54 +1,47 @@
 import React from 'react';
 import { Button, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
+import { genders } from '../Constants/constants';
+import CustomDropdown from './CustomDropdown';
 
 interface Props {
     next: () => void;
     prev: () => void;
-}
-
-interface State {
+    onChangeFirstName: (value: string) => void;
+    onChangeLastName: (value: string) => void;
+    onChangeGender: (value: string) => void;
     firstName: string;
     lastName: string;
+    gender: string;
 }
 
-export default class Introduction extends React.PureComponent<Props, State> {
-    constructor(props: Props) {
-        super(props);
-
-        this.state = { firstName: '', lastName: '' }
+const Introduction = ({ next, prev, firstName, lastName, gender, onChangeGender, onChangeFirstName, onChangeLastName }: Props) => {
+    let onHandlerFirst = (e: React.ChangeEvent<HTMLInputElement>) => {
+        onChangeFirstName(e.target.value);
     }
 
-    onHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let { name, value } = e.target;
-
-        this.setState({ [name]: value } as Pick<State, keyof State>);
+    let onHandlerLast = (e: React.ChangeEvent<HTMLInputElement>) => {
+        onChangeLastName(e.target.value);
     }
+    
+    return (
+        <>
+            <ModalBody>
+                <FormGroup>
+                    <Input onChange={onHandlerFirst} value={firstName} className="Register-Input" type="text" name="firstName" placeholder="First Name" />
+                </FormGroup>
+                <FormGroup>
+                    <Input onChange={onHandlerLast} value={lastName} className="Register-Input" type="text" name="lastName" placeholder="Last Name" />
+                </FormGroup>
+                <FormGroup>
+                    <CustomDropdown data={genders} value={gender || 'Gender'} onChange={onChangeGender} />
+                </FormGroup>
+            </ModalBody>
+            <ModalFooter className="Register-Footer Footer-space">
+                <Button color="link" className="Button-Prev" onClick={prev}>prev step</Button>
+                <Button className="Button-Next" disabled={!firstName || !lastName || !gender} color="danger" onClick={next}>next step</Button>
+            </ModalFooter>
+        </>
+    );
+}
 
-    render() {
-        let { next, prev } = this.props;
-        let { firstName, lastName } = this.state;
-
-        return (
-            <>
-                <ModalBody>
-                    <FormGroup>
-                        <Input onChange={this.onHandler} type="text" name="firstName" placeholder="First Name" />
-                    </FormGroup>
-                    <FormGroup>
-                        <Input onChange={this.onHandler} type="text" name="lastName" placeholder="Last Name" />
-                    </FormGroup>
-                    <FormGroup>
-                        <Input type="select" name="select" placeholder="Gender" >
-                            <option>Male</option>
-                            <option>Femal</option>
-                        </Input>
-                    </FormGroup>
-                </ModalBody>
-                <ModalFooter className="Register-Footer Footer-space">
-                    <Button color="link" className="Button-Prev" onClick={prev}>prev step</Button>
-                    <Button className="Button-Next" disabled={!firstName || !lastName} color="danger" onClick={next}>next step</Button>
-                </ModalFooter>
-            </>
-        );
-    }
-};
+export default React.memo(Introduction);

@@ -17,6 +17,7 @@ $lightGrey: rgb(246, 246, 246);
     text-transform: uppercase;
     text-align: center;
     font-weight: 500;
+    margin-bottom: 30px;
 }
 
 .Register-Footer{
@@ -59,24 +60,42 @@ $lightGrey: rgb(246, 246, 246);
     max-height: 350px;
 }
 
-.Button-Next{
+@mixin btn-accent {
     text-transform: uppercase;
     font-weight: 500;
     background-color: $accent;
     border-color: $accent;
+    color:white;
+}
+
+@mixin btn-icon {
+    content: '';
+    height: 70%;
+    width: 17px;
+    background-position: center !important;
+    background-size: 100% 100% !important;
+    position: absolute;
+}
+
+.Button-Next{
+    @include btn-accent;
     position: relative;
     padding-right: 25px;
 
     &::after{
-        content: '';
+        @include btn-icon;
         background: url(../img/right-chevron.svg);
-        height: 70%;
-        width: 17px;
-        background-position: center ;
-        background-size: 100% 100%;
-        position: absolute;
         right: 5px;
     }
+}
+
+.Button-Ok{
+    @include btn-accent;
+}
+
+.Button-Submit{
+    @include btn-accent;
+    width: 100%;
 }
 
 .Button-Prev{
@@ -88,12 +107,7 @@ $lightGrey: rgb(246, 246, 246);
     position: relative;
 
     &::before{
-        content: '';
-        height: 70%;
-        width: 17px;
-        background-position: center !important;
-        background-size: 100% 100% !important;
-        position: absolute;
+        @include btn-icon;
         left: 5px;
         background: url(../img/chevron-pointing-to-the-left.svg);
     }
